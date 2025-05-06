@@ -1,1 +1,58 @@
-/* You can add global styles to this file, and also import other style files */
+/* styles.scss */
+@import "tailwindcss";
+
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  
+  &.dark-theme {
+    background-color: #1a202c;
+    color: #f7fafc;
+    
+    .card {
+      background-color: #2d3748;
+      color: #f7fafc;
+    }
+    
+    .form-control {
+      background-color: #4a5568;
+      color: #f7fafc;
+      border-color: #4a5568;
+    }
+  }
+}
+
+.card {
+  background-color: white;
+  color: #1a202c;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.form-control {
+  background-color: white;
+  color: #1a202c;
+  border-color: #e2e8f0;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-toggle {
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  background-color: #2d3748;
+  color: #f7fafc;
+  border: none;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #4a5568;
+  }
+
+  .dark-theme & {
+    background-color: #747575;
+    color: #1a202c;
+    
+    &:hover {
+      background-color: #6d6f72;
+    }
+  }
+}
