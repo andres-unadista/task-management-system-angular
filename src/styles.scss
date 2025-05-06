@@ -19,6 +19,17 @@ body {
       border-color: #4a5568;
     }
   }
+  p.text-gray-600 {
+    color: #a0aec0; /* Un gris más claro para mejor contraste */
+  }
+
+  a.text-indigo-400 {
+    color: #7f9cf5; /* Un azul más claro para mejor visibilidad */
+    
+    &:hover {
+      color: #667eea; /* Color hover más claro */
+    }
+  }
 }
 
 .card {
@@ -35,7 +46,6 @@ body {
 }
 
 .theme-toggle {
-  cursor: pointer;
   padding: 8px;
   border-radius: 50%;
   background-color: #2d3748;
@@ -55,4 +65,8 @@ body {
       background-color: #6d6f72;
     }
   }
+}
+
+button {
+  cursor: pointer;
 }

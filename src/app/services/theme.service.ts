@@ -1,5 +1,6 @@
 // theme.service.ts
-import { Injectable } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+import { Inject, Injectable } from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
@@ -8,9 +9,14 @@ export class ThemeService {
   private readonly THEME_KEY = 'dark-theme';
   private darkMode = false;
 
-  constructor() {
-    this.darkMode = localStorage.getItem(this.THEME_KEY) === 'true';
-    this.updateTheme();
+  constructor(@Inject(DOCUMENT) private document: Document) {
+      const localStorage = document.defaultView?.localStorage;
+  
+      if (localStorage) { 
+        this.darkMode = localStorage.getItem(this.THEME_KEY) === 'true';
+        this.updateTheme();
+
+      }
   }
 
   isDarkMode() {
