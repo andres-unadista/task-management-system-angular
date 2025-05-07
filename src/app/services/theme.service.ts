@@ -7,7 +7,7 @@ import { Inject, Injectable } from '@angular/core';
 })
 export class ThemeService {
   private readonly THEME_KEY = 'dark-theme';
-  private darkMode = false;
+  public darkMode = false;
 
   constructor(@Inject(DOCUMENT) private document: Document) {
       const localStorage = document.defaultView?.localStorage;

@@ -108,3 +108,26 @@ button {
 .main {
   margin-top: 1rem;
 }
+
+.swal2-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+
+
+tr {
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    background-color: rgba(209, 213, 219, 0.5); /* bg-gray-300 con opacidad */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.dark tr {
+  &:hover {
+    background-color: rgba(31, 41, 55, 0.7); /* dark:bg-gray-800 con opacidad */
+  }
+}
