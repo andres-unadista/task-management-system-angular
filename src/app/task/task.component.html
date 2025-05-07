@@ -1,0 +1,98 @@
+<div class="min-h-screen">
+    <!-- Navbar (igual al de projects) -->
+    <nav class="bg-white dark:bg-gray-800 shadow mb-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold dark:text-white">Gestor de Tareas</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button (click)="themeService.toggleDarkMode()" class="theme-toggle">
+                        🌙
+                    </button>
+                    <button (click)="logout()" class="text-gray-700 dark:text-gray-200 hover:text-indigo-500">
+                        Cerrar sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido principal -->
+    <main class="container mx-auto p-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+            <h2 class="text-2xl font-bold dark:text-white">Lista de Tareas del Proyecto {{projectId}}</h2>
+
+            <div class="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                <button (click)="openCreateTaskModal()"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded whitespace-nowrap">
+                    + Nueva Tarea
+                </button>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="flex flex-col sm:flex-row gap-4 mb-4">
+            <div class="relative flex-grow">
+                <input type="text" [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()"
+                    placeholder="Buscar por título o ID"
+                    class="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-400"></i>
+            </div>
+
+            <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()"
+                class="px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600">
+                <option *ngFor="let status of statusOptions" [value]="status">
+                    {{status}}
+                </option>
+            </select>
+        </div>
+
+        <!-- Tabla de tareas -->
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Fecha Límite</th>
+                        <th>Prioridad</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let task of paginatedTasks">
+                        <td data-label="ID">{{task.id}}</td>
+                        <td data-label="Título">{{task.title}}</td>
+                        <td data-label="Descripción">{{task.description}}</td>
+                        <td data-label="Fecha Límite">
+                            {{task.expiration_date | date:'medium'}}
+                        </td>
+                        <td data-label="Prioridad">{{task.priority_level}}</td>
+                        <td data-label="Estado">{{task.status}}</td>
+                        <td data-label="Acciones">
+                            <button class="edit-btn"(click)="openEditTaskModal(task)"><i class="fas fa-edit"></i></button>
+                            <button class="delete-btn" (click)="deleteTask(task)"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="flex justify-center items-center mt-4 space-x-4 paginator">
+            <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
+                <i class="fas fa-chevron-left mr-2"></i> Anterior
+            </button>
+            <span class="text-gray-700 dark:text-gray-300">
+                Página {{currentPage}} de {{totalPages}}
+            </span>
+            <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+                class="pagination-btn">
+                Siguiente <i class="fas fa-chevron-right ml-2"></i>
+            </button>
+        </div>
+    </main>
+</div>
