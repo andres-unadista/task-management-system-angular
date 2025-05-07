@@ -1,0 +1,110 @@
+/* Tabla responsive */
+.table-container {
+  overflow-x: auto; /* Permite scroll horizontal en móviles */
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  overflow-x: visible; /* Elimina scroll en pantallas grandes */
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+
+  table {
+    display: block;
+    min-width: 100%;
+
+    thead {
+      display: none; /* Ocultamos los headers en móvil */
+    }
+
+    tbody,
+    tr,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    tr {
+      border-bottom: 1px solid #e2e8f0;
+      padding: 1rem 0;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    td {
+      padding: 0.5rem 1rem;
+      text-align: right;
+      position: relative;
+
+      &::before {
+        content: attr(data-label);
+        position: absolute;
+        left: 1rem;
+        font-weight: bold;
+        color: #4a5568;
+      }
+    }
+  }
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+table {
+  width: 100%;
+  max-width: 100%;
+  min-width: 600px;
+  overflow-x: auto;
+  display: block;
+
+  th,
+  td {
+    text-align: center; /* Centrar texto */
+    vertical-align: middle; /* Centrar verticalmente */
+  }
+}
+
+/* Estilos para botones */
+button {
+  text-align: center;
+  margin-top: 0.5rem;
+  &.edit-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+
+    &:hover {
+      background-color: #2563eb;
+    }
+  }
+
+  &.delete-btn {
+    background-color: #ef4444;
+    color: white;
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background-color: #dc2626;
+    }
+  }
+}
+
+.paginator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+}
+
+.main {
+  margin-top: 1rem;
+}

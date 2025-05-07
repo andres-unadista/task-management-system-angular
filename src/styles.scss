@@ -1,5 +1,6 @@
 /* styles.scss */
 @import "tailwindcss";
+@import '@fortawesome/fontawesome-free/css/all.css';
 
 body {
   transition: background-color 0.3s ease, color 0.3s ease;
@@ -18,6 +19,18 @@ body {
       color: #f7fafc;
       border-color: #4a5568;
     }
+
+    .table-container {
+      border-color: #4a5568;
+      
+      td::before {
+        color: #cbd5e0;
+      }
+      
+      tr {
+        border-color: #4a5568;
+      }
+    }
   }
   p.text-gray-600 {
     color: #a0aec0; /* Un gris más claro para mejor contraste */
@@ -29,6 +42,10 @@ body {
     &:hover {
       color: #667eea; /* Color hover más claro */
     }
+   
+  }
+  span.text-xl {
+    color: #2d3748 !important;
   }
 }
 
@@ -70,3 +87,5 @@ body {
 button {
   cursor: pointer;
 }
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
