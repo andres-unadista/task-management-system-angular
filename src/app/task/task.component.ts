@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
+import { SubTask, SubTaskComponent } from '../subtask/subtask.component';
 
 interface Task {
   id: number;
@@ -14,16 +15,20 @@ interface Task {
   status: string;
   project_id: number;
   user_iduser: number;
+  subtasks?: SubTask[]; // Nueva propiedad
+  showSubtasks?: boolean; // Para controlar el collapse
 }
 
 @Component({
   selector: 'app-task',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, SubTaskComponent],
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
 })
 export class TaskComponent {
+  showProfileMenu = false;
+  isDarkMode = false;
   themeService = inject(ThemeService);
   route = inject(ActivatedRoute);
 
@@ -64,11 +69,21 @@ export class TaskComponent {
   paginatedTasks: Task[] = [];
 
   constructor() {
-    this.updatePaginatedTasks();
-    this.route.params.subscribe((params) => {
-      this.projectId = +params['id_project'];
-      console.log('ID del proyecto:', this.projectId);
+    this.route.paramMap.subscribe(params => {
+      this.projectId = Number(params.get('id_project'));
+      this.initializeSubtasks(this.projectId);
     });
+    this.updatePaginatedTasks();
+    this.detectDarkMode();
+  }
+
+  detectDarkMode() {
+    // Si ThemeService tiene un método para saber el modo, úsalo aquí
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      this.isDarkMode = true;
+    }
+    // Si ThemeService tiene un observable, puedes suscribirte aquí
+    // O actualizar esto cuando el usuario cambie el tema
   }
 
   get filteredTasks() {
@@ -343,6 +358,34 @@ export class TaskComponent {
         });
       }
     });
+  }
+
+  toggleSubtasks(task: Task) {
+    // Alternar el estado de visualización
+    task.showSubtasks = !task.showSubtasks;
+    
+    // Inicializar subtareas si es la primera vez que se expande
+    if (task.showSubtasks && !task.subtasks) {
+      task.subtasks = this.initializeSubtasks(task.id);
+    }
+  }
+  
+  private initializeSubtasks(taskId: number): SubTask[] {
+    // Datos de ejemplo - en una app real vendrían de una API
+    return [
+      {
+        id: 1,
+        title: 'Diseñar componentes UI',
+        completed: false,
+        task_id: taskId
+      },
+      {
+        id: 2,
+        title: 'Implementar lógica básica',
+        completed: false,
+        task_id: taskId
+      }
+    ];
   }
 
   logout() {

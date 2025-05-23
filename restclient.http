@@ -1,0 +1,25 @@
+GET http://app-movies-api.test/api/users HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 2|4dNZUrfqm6al2Y4zFAC81lsxxvJcz9vmS6TZ1Iqs40274271
+
+###
+POST http://app-movies-api.test/api/register HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "test",
+    "email": "test5@example.com",
+    "password": "password"
+}
+
+###
+POST http://app-movies-api.test/api/login HTTP/1.1
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "test5@example.com",
+    "password": "password"
+}

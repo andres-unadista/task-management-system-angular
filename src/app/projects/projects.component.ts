@@ -26,6 +26,8 @@ interface Project {
 })
 
 export class ProjectsComponent {
+  showProfileMenu = false;
+
   themeService = inject(ThemeService);
    // Datos y paginación
    allProjects: Project[] = [
@@ -92,7 +94,7 @@ export class ProjectsComponent {
     console.log('Sesión cerrada');
   }
 
-  deleteProject(project: Project) {
+  deleteProject(project: Project, event: MouseEvent) {
     Swal.fire({
       title: '¿Eliminar proyecto?',
       text: `Estás por eliminar "${project.name}". Esta acción no se puede deshacer.`,
@@ -173,7 +175,8 @@ export class ProjectsComponent {
     });
   }
 
-  openEditProjectModal(project: Project) {
+  openEditProjectModal(project: Project, event: MouseEvent) {
+
     Swal.fire({
       title: 'Editar Proyecto',
       html: `
@@ -227,7 +230,10 @@ export class ProjectsComponent {
     });
   }
 
-  navigateToTasks(projectId: number) {
+  navigateToTasks(projectId: number, event: MouseEvent) {
+    if (event.target instanceof HTMLElement && event.target.closest('button')) {
+      return; // Si fue un botón, no redirigir
+    }
     this.router.navigate(['/task', projectId]);
   }
 }

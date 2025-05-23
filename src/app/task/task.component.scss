@@ -1,1 +1,15 @@
-@import '../projects/projects.component.scss';
+@import "../projects/projects.component.scss";
+
+tr.expanded-row {
+  transition: all 0.3s ease;
+}
+
+.subtask-container {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.toggle-btn {
+    background-color: #e2e2e2;
+    padding: 0.5rem;
+}
