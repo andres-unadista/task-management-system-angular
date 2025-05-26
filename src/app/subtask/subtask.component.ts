@@ -54,8 +54,6 @@ export class SubTaskComponent implements OnInit {
   @Input() subtasks: SubTask[] = [];
 
   ngOnInit(): void {
-    console.log(this.subtasks)
-    console.log(this.taskId)
   }
 
   addSubtask() {
@@ -85,7 +83,6 @@ export class SubTaskComponent implements OnInit {
       color: this.themeService.darkMode ? '#f3f4f6' : '#111827',
     }).then((result) => {
       if (result.isConfirmed) {
-        console.log('Subtask eliminada', subtaskId);
         this.subtasks = this.subtasks.filter((st) => st.idsubtask !== subtaskId);
       }
     });

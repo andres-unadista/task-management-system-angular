@@ -1,5 +1,5 @@
 // projects.component.ts
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { ProjectsService } from '../services/projects.service';
 import { iconStatus } from '../shared/icons';
+import { Subscription } from 'rxjs';
 
 export interface Project {
   id: number;
@@ -28,10 +29,11 @@ export interface Project {
   styleUrls: ['./projects.component.scss']
 })
 
-export class ProjectsComponent implements OnInit{
+export class ProjectsComponent implements OnInit, OnDestroy{
   private authService = inject(AuthService);
   private projectService = inject(ProjectsService);
   public iconStatus = iconStatus;
+  private subscription: Subscription;
   
   showProfileMenu = false;
 
@@ -48,25 +50,29 @@ export class ProjectsComponent implements OnInit{
   router = inject(Router);
 
   constructor(){
-    if (!localStorage.getItem('token')) {
-      this.router.navigate(['/login'])
+    this.subscription = new Subscription();
+    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+      this.router.navigate(['/login']);
     }
   }
 
   ngOnInit(): void {
-    this.projectService.getProjects().subscribe({
+   this.subscription = this.projectService.getProjects().subscribe({
       next: (response) => {
         this.allProjects = response
-        console.log(response)
         this.updatePaginatedProjects();
       },
       error: (error) => {
         if (error.status === 401) {
-          console.log('Error de autorización')
+          console.error('Error de autorización')
          this.logout();
         }
       }
     })
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   get filteredProjects() {
@@ -206,7 +212,6 @@ export class ProjectsComponent implements OnInit{
   }
 
   private alertEdit(project: Project) {
-    console.log(project)
     Swal.fire({
       title: 'Editar Proyecto',
       html: `

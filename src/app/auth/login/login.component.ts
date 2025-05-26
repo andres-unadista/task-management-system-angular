@@ -31,7 +31,6 @@ export class LoginComponent {
   login(email: string, password: string) {
     this.authService.login({email, password}).subscribe({
       next: (response) => {
-        console.log(response)
         this.router.navigate(['/projects'])
       },
       error: (error) => {
@@ -50,7 +49,6 @@ export class LoginComponent {
       let email = this.loginForm.value.email!;
       let password = this.loginForm.value.password!;
       this.login(email, password);
-      console.log(this.loginForm.value);
     }
   }
 }

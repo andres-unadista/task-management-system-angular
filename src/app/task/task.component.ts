@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
@@ -8,6 +8,7 @@ import { SubTask, SubTaskComponent } from '../subtask/subtask.component';
 import { AuthService } from '../services/auth.service';
 import { TasksService } from '../services/tasks.service';
 import { iconStatus } from '../shared/icons';
+import { Subscription } from 'rxjs';
 
 export interface Task {
   id: number;
@@ -29,10 +30,11 @@ export interface Task {
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
 })
-export class TaskComponent implements OnInit {
+export class TaskComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private taskService = inject(TasksService);
   public iconStatus = iconStatus;
+  private subscription: Subscription;
 
   showProfileMenu = false;
   isDarkMode = false;
@@ -55,19 +57,20 @@ export class TaskComponent implements OnInit {
   paginatedTasks: Task[] = [];
 
   constructor() {
+    this.subscription = new Subscription();
     this.route.paramMap.subscribe(params => {
       this.projectId = Number(params.get('id_project'));
     });
 
-    if (!localStorage.getItem('token')) {
-      this.router.navigate(['/login'])
+    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
+      this.router.navigate(['/login']);
     }
-  
+
     this.detectDarkMode();
   }
 
   ngOnInit(): void {
-    this.taskService.getTasks(this.projectId).subscribe({
+    this.subscription = this.taskService.getTasks(this.projectId).subscribe({
       next: (response) => {
         this.allTasks = response
         console.log(response)
@@ -82,9 +85,13 @@ export class TaskComponent implements OnInit {
     })
   }
 
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
   detectDarkMode() {
     // Si ThemeService tiene un método para saber el modo, úsalo aquí
-    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       this.isDarkMode = true;
     }
     // Si ThemeService tiene un observable, puedes suscribirte aquí

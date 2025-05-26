@@ -1,22 +1,20 @@
-import { Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Project } from '../projects/projects.component';
-import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectsService {
   private apiUrl = 'http://app-movies-api.test/api/projects';
-  private token: any;
 
   constructor(private http: HttpClient) {
-    this.token = localStorage.getItem('token')!
   }
 
   getProjects(): Observable<Project[]> {
-    return this.http.get<Project[]>(this.apiUrl, {headers: {'Authorization': `Bearer ${this.token}`}}).pipe(map((response: Project[]) => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+    return this.http.get<Project[]>(this.apiUrl, {headers: {'Authorization': `Bearer ${token}`}}).pipe(map((response: Project[]) => {
       return response;
     }));
   }

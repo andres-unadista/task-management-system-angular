@@ -1,24 +1,23 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Task } from '../task/task.component';
-import { DOCUMENT } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TasksService {
   private apiUrl = 'http://app-movies-api.test/api/tasks';
-  private token: any;
 
   constructor(private http: HttpClient) {
-    this.token = localStorage.getItem('token')!;
   }
 
   getTasks(project: number): Observable<Task[]> {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token')! : null;
+
     return this.http
       .get<Task[]>(`${this.apiUrl}/project/${project}`, {
-        headers: { Authorization: `Bearer ${this.token}` },
+        headers: { Authorization: `Bearer ${token}` },
       })
       .pipe(
         map((response: Task[]) => {
