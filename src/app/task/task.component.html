@@ -4,7 +4,8 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <span class="text-xl font-bold dark:text-white">Gestor de Tareas</span>
+                    <span class="text-xl font-bold dark:text-white" id="navbar" routerLink="/projects">Gestor de
+                        Tareas</span>
                 </div>
                 <div class="flex items-center space-x-4">
                     <button (click)="themeService.toggleDarkMode()" class="theme-toggle">
@@ -60,61 +61,70 @@
             </select>
         </div>
 
-        <!-- Tabla de tareas -->
-        <div class="table-container">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Título</th>
-                        <th>Descripción</th>
-                        <th>Fecha Límite</th>
-                        <th>Prioridad</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let task of paginatedTasks">
-                        <td data-label="ID">{{task.id}}</td>
-                        <td data-label="Título">{{task.title}}</td>
-                        <td data-label="Descripción">{{task.description}}</td>
-                        <td data-label="Fecha Límite">
-                            {{task.expiration_date | date:'medium'}}
-                        </td>
-                        <td data-label="Prioridad">{{task.priority_level}}</td>
-                        <td data-label="Estado">{{task.status}}</td>
-                        <td data-label="Subtareas">
-                            <button (click)="toggleSubtasks(task)" class="toggle-btn">
-                                <i class="fas {{task.showSubtasks ? 'fa-eye-slash' : 'fa-eye'}}"></i>
-                                {{task.showSubtasks ? 'Ocultar' : 'Mostrar Subtareas'}}
-                            </button>
-                        </td>
-                        <td *ngIf="task.showSubtasks" colspan="7">
-                            <app-subtask [taskId]="task.id" [subtasks]="task.subtasks || []"></app-subtask>
-                        </td>
-                        <td data-label="Acciones">
-                            <button class="edit-btn" (click)="openEditTaskModal(task)"><i
-                                    class="fas fa-edit"></i></button>
-                            <button class="delete-btn" (click)="deleteTask(task)"><i class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+        <div *ngIf="allTasks.length > 0">
+            <!-- Tabla de tareas -->
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Descripción</th>
+                            <th>Fecha Límite</th>
+                            <th>Prioridad</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let task of paginatedTasks">
+                            <td data-label="ID">{{task.id}}</td>
+                            <td data-label="Título" id="title">
+                                <div>{{task.title}}</div>
+                            </td>
+                            <td data-label="Descripción" id="description">
+                                <div id="text-desc">
+                                    {{task.description}}
+                                </div>
+                            </td>
+                            <td data-label="Fecha Límite">
+                                {{task.expiration_date | date:'medium'}}
+                            </td>
+                            <td data-label="Prioridad">{{task.priority_level}}</td>
+                            <td data-label="Estado">{{iconStatus[task.status]}}</td>
+                            <td data-label="Subtareas">
+                                <button (click)="toggleSubtasks(task)" class="toggle-btn">
+                                    <i class="fas {{task.showSubtasks ? 'fa-eye-slash' : 'fa-eye'}}"></i>
+                                    {{task.showSubtasks ? 'Ocultar' : 'Mostrar Subtareas'}}
+                                </button>
+                            </td>
+                            <td *ngIf="task.showSubtasks" colspan="7">
+                                <app-subtask [taskId]="task.id" [subtasks]="task.subtasks!"></app-subtask>
+                            </td>
+                            <td data-label="Acciones">
+                                <button class="edit-btn" (click)="openEditTaskModal(task)"><i
+                                        class="fas fa-edit"></i></button>
+                                <button class="delete-btn" (click)="deleteTask(task)"><i
+                                        class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-        <!-- Paginación -->
-        <div class="flex justify-center items-center mt-4 space-x-4 paginator">
-            <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
-                <i class="fas fa-chevron-left mr-2"></i> Anterior
-            </button>
-            <span class="text-gray-700 dark:text-gray-300">
-                Página {{currentPage}} de {{totalPages}}
-            </span>
-            <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-                class="pagination-btn">
-                Siguiente <i class="fas fa-chevron-right ml-2"></i>
-            </button>
+            <!-- Paginación -->
+            <div class="flex justify-center items-center mt-4 space-x-4 paginator">
+                <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
+                    <i class="fas fa-chevron-left mr-2"></i> Anterior
+                </button>
+                <span class="text-gray-700 dark:text-gray-300">
+                    Página {{currentPage}} de {{totalPages}}
+                </span>
+                <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+                    class="pagination-btn">
+                    Siguiente <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
         </div>
     </main>
 </div>

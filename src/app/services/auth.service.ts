@@ -1,7 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Inject, inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 
 export interface UserCredentials {
   email: string;
@@ -18,14 +20,16 @@ export interface UserRegistration {
   providedIn: 'root'
 })
 export class AuthService {
+  private router = inject(Router)
   private apiUrl = 'http://app-movies-api.test/api';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+  }
 
-  login(email: string, password: string): Observable<any> {
-    const credentials: UserCredentials = { email, password };
+  login(credentials: UserCredentials): Observable<any> {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       map((response: any) => {
+        localStorage.setItem('token', response.access_token);
         // Store token or user data if needed
         return response;
       })
@@ -44,6 +48,7 @@ export class AuthService {
   logout(): void {
     // Implement logout logic if needed
     localStorage.removeItem('token');
+    this.router.navigate(['/']);
   }
 
   isAuthenticated(): boolean {

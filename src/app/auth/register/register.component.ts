@@ -2,8 +2,10 @@
 import { Component, inject } from '@angular/core';
 import { FormGroup, FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+
 import { ThemeService } from '../../services/theme.service';
 import { AuthService, UserRegistration } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -19,6 +21,7 @@ export class RegisterComponent {
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required, Validators.minLength(6)])
   });
+  router = inject(Router);
 
   constructor(private themeService: ThemeService) {}
 
@@ -31,9 +34,12 @@ export class RegisterComponent {
     this.authService.register(user).subscribe({
       next: (response) => {
         // Handle successful registration
+        console.log(response);
+        this.router.navigate(['/'])
       },
       error: (error) => {
         // Handle error
+        console.error('Error', error)
       }
     });
   }
@@ -41,7 +47,10 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.registerForm.valid) {
-      console.log(this.registerForm.value);
+      let email = this.registerForm.value.email!;
+      let name = this.registerForm.value.name!;
+      let password = this.registerForm.value.password!;
+      this.register({name, email, password})
     }
   }
 }

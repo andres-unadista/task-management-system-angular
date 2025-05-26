@@ -13,12 +13,16 @@
                     </button>
                     <div class="relative group">
                         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=150&q=80"
-                             alt="Perfil"
-                             class="w-10 h-10 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
-                             (click)="showProfileMenu = !showProfileMenu">
-                        <span class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
-                        <div *ngIf="showProfileMenu" class="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700 animate-fade-in">
-                            <button (click)="logout(); showProfileMenu = false" class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Cerrar sesión</button>
+                            alt="Perfil"
+                            class="w-10 h-10 rounded-full object-cover cursor-pointer hover:opacity-80 transition-opacity"
+                            (click)="showProfileMenu = !showProfileMenu">
+                        <span
+                            class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+                        <div *ngIf="showProfileMenu"
+                            class="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-lg shadow-lg py-2 z-50 border border-gray-200 dark:border-gray-700 animate-fade-in">
+                            <button (click)="logout(); showProfileMenu = false"
+                                class="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">Cerrar
+                                sesión</button>
                         </div>
                     </div>
                 </div>
@@ -49,53 +53,57 @@
             <select [(ngModel)]="selectedStatus" (ngModelChange)="onFilterChange()"
                 class="px-4 py-2 border rounded-md dark:bg-blue-900 dark:border-gray-600 dark:text-black">
                 <option *ngFor="let status of statusOptions" [value]="status">
-    {{status}}
-</option>
+                    {{status}}
+                </option>
             </select>
         </div>
-        <!-- Tabla -->
-        <div class="table-container">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let project of paginatedProjects" (click)="navigateToTasks(project.id, $event)"  class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors">
-                        <td data-label="ID">{{project.id}}</td>
-                        <td data-label="Nombre">{{project.name}}</td>
-                        <td data-label="Descripción">{{project.description}}</td>
-                        <td data-label="Estado">{{project.status}}</td>
-                        <td data-label="Acciones">
-                            <button class="edit-btn" (click)="openEditProjectModal(project, $event)"><i
-                                    class="fas fa-edit"></i></button>
-                            <button class="delete-btn" (click)="deleteProject(project, $event)"><i
-                                    class="fas fa-trash"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
 
-        <!-- Paginación manual -->
-        <div class="flex justify-center items-center mt-4 space-x-4 paginator">
-            <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
-                <i class="fas fa-chevron-left mr-2"></i> Anterior
-            </button>
-
-            <span class="text-gray-700 dark:text-gray-300">
-                Página {{currentPage}} de {{totalPages}}
-            </span>
-
-            <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-                class="pagination-btn">
-                Siguiente <i class="fas fa-chevron-right ml-2"></i>
-            </button>
+        <div *ngIf="allProjects.length > 0">
+            <!-- Tabla -->
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let project of paginatedProjects" (click)="navigateToTasks(project.id, $event)"
+                            class="hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors">
+                            <td data-label="ID">{{project.id}}</td>
+                            <td data-label="Nombre">{{project.name}}</td>
+                            <td data-label="Descripción">{{project.description}}</td>
+                            <td data-label="Estado">{{iconStatus[project.status]}}</td>
+                            <td data-label="Acciones">
+                                <button class="edit-btn" (click)="openEditProjectModal(project, $event)"><i
+                                        class="fas fa-edit"></i></button>
+                                <button class="delete-btn" (click)="deleteProject(project, $event)"><i
+                                        class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <!-- Paginación manual -->
+            <div class="flex justify-center items-center mt-4 space-x-4 paginator">
+                <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" class="pagination-btn">
+                    <i class="fas fa-chevron-left mr-2"></i> Anterior
+                </button>
+    
+                <span class="text-gray-700 dark:text-gray-300">
+                    Página {{currentPage}} de {{totalPages}}
+                </span>
+    
+                <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+                    class="pagination-btn">
+                    Siguiente <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
         </div>
     </main>
 </div>

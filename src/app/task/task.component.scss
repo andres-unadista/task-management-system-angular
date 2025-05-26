@@ -13,3 +13,16 @@ tr.expanded-row {
     background-color: #e2e2e2;
     padding: 0.5rem;
 }
+
+#navbar{
+  cursor: pointer;
+}
+
+#description, #title{
+  display: flex!important;
+  justify-content: end!important;  
+  
+  div {
+    width: 60%;
+  }
+}

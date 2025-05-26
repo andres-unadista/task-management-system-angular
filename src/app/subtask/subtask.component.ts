@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ThemeService } from '../services/theme.service';
 import Swal from 'sweetalert2';
 
 export interface SubTask {
-  id: number;
-  title: string;
-  completed: boolean;
-  task_id: number;
+  idsubtask: number;
+  name: string;
+  status: boolean;
+  task_idtask: number;
 }
 
 @Component({
@@ -33,13 +33,13 @@ export interface SubTask {
           class="flex items-center justify-between group"
         >
           <div class="flex items-center">
-            <input type="checkbox" [(ngModel)]="subtask.completed" />
-            <span [class.line-through]="subtask.completed" class="ml-2">
-              {{ subtask.title }}
+            <input type="checkbox" [(ngModel)]="subtask.status" />
+            <span [class.line-through]="subtask.status" class="ml-2">
+              {{ subtask.name }}
             </span>
           </div>
           <button
-            (click)="removeSubtask(subtask.id)"
+            (click)="removeSubtask(subtask.idsubtask)"
             class="text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
           >
             <i class="fas fa-trash"></i>
@@ -49,26 +49,31 @@ export interface SubTask {
     </div>
   `,
 })
-export class SubTaskComponent {
+export class SubTaskComponent implements OnInit {
   @Input() taskId!: number;
   @Input() subtasks: SubTask[] = [];
 
+  ngOnInit(): void {
+    console.log(this.subtasks)
+    console.log(this.taskId)
+  }
+
   addSubtask() {
     this.subtasks.push({
-      id: this.subtasks.length + 1,
-      title: 'Nueva subtarea',
-      completed: false,
-      task_id: this.taskId,
+      idsubtask: this.subtasks.length + 1,
+      name: 'Nueva subtarea',
+      status: false,
+      task_idtask: this.taskId,
     });
   }
 
   removeSubtask(subtaskId: number) {
-    const subtask = this.subtasks.find(task => task.id === subtaskId);
+    const subtask = this.subtasks.find(task => task.idsubtask === subtaskId);
 
     if (!subtask) return;
 
     Swal.fire({
-      title: `¿Eliminar subtarea ${subtask.title}?`,
+      title: `¿Eliminar subtarea ${subtask.name}?`,
       text: 'Esta acción no se puede deshacer',
       icon: 'warning',
       showCancelButton: true,
@@ -81,10 +86,11 @@ export class SubTaskComponent {
     }).then((result) => {
       if (result.isConfirmed) {
         console.log('Subtask eliminada', subtaskId);
-        this.subtasks = this.subtasks.filter((st) => st.id !== subtaskId);
+        this.subtasks = this.subtasks.filter((st) => st.idsubtask !== subtaskId);
       }
     });
   }
 
-  constructor(private themeService: ThemeService) {}
+  constructor(private themeService: ThemeService) {
+  }
 }

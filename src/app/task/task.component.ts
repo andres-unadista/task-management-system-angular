@@ -1,12 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ThemeService } from '../services/theme.service';
 import Swal from 'sweetalert2';
 import { FormsModule } from '@angular/forms';
 import { SubTask, SubTaskComponent } from '../subtask/subtask.component';
+import { AuthService } from '../services/auth.service';
+import { TasksService } from '../services/tasks.service';
+import { iconStatus } from '../shared/icons';
 
-interface Task {
+export interface Task {
   id: number;
   title: string;
   description: string;
@@ -26,38 +29,21 @@ interface Task {
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.scss'],
 })
-export class TaskComponent {
+export class TaskComponent implements OnInit {
+  private authService = inject(AuthService);
+  private taskService = inject(TasksService);
+  public iconStatus = iconStatus;
+
   showProfileMenu = false;
   isDarkMode = false;
   themeService = inject(ThemeService);
   route = inject(ActivatedRoute);
+  router = inject(Router)
 
   projectId: number = 0;
 
   // Datos de prueba
-  allTasks: Task[] = [
-    {
-      id: 1,
-      title: 'Implementar diseño',
-      description: 'Crear componentes UI',
-      expiration_date: '2023-06-15',
-      priority_level: 'Alta',
-      status: 'En progreso',
-      project_id: 1,
-      user_iduser: 1,
-    },
-    {
-      id: 2,
-      title: 'Implementar diseño',
-      description: 'Crear componentes UI',
-      expiration_date: '2023-06-15',
-      priority_level: 'Alta',
-      status: 'Completada',
-      project_id: 1,
-      user_iduser: 1,
-    },
-    // Más tareas...
-  ];
+  allTasks: Task[] = [];
 
   searchTerm = '';
   selectedStatus = 'Todos';
@@ -71,10 +57,29 @@ export class TaskComponent {
   constructor() {
     this.route.paramMap.subscribe(params => {
       this.projectId = Number(params.get('id_project'));
-      this.initializeSubtasks(this.projectId);
     });
-    this.updatePaginatedTasks();
+
+    if (!localStorage.getItem('token')) {
+      this.router.navigate(['/login'])
+    }
+  
     this.detectDarkMode();
+  }
+
+  ngOnInit(): void {
+    this.taskService.getTasks(this.projectId).subscribe({
+      next: (response) => {
+        this.allTasks = response
+        console.log(response)
+        this.updatePaginatedTasks();
+      },
+      error: (error) => {
+        if (error.status === 401) {
+          console.log('Error de autorización')
+          this.logout();
+        }
+      }
+    })
   }
 
   detectDarkMode() {
@@ -122,6 +127,10 @@ export class TaskComponent {
   }
 
   openCreateTaskModal() {
+    this.alertCreate();
+  }
+
+  private alertCreate() {
     Swal.fire({
       title: 'Crear Nueva Tarea',
       html: `
@@ -225,10 +234,15 @@ export class TaskComponent {
   // task.component.ts
   openEditTaskModal(task: Task) {
     // Convertir fecha ISO a formato datetime-local
+    console.log(task)
     const taskDate = task.expiration_date
       ? new Date(task.expiration_date).toISOString().slice(0, 16)
       : '';
 
+    this.alertEdit(task, taskDate);
+  }
+
+  private alertEdit(task: Task, taskDate: string) {
     Swal.fire({
       title: 'Editar Tarea',
       html: `
@@ -249,9 +263,9 @@ export class TaskComponent {
         <div>
           <label class="block text-sm mb-1 dark:text-gray-300">Prioridad</label>
           <select id="edit-task-priority" class="swal2-select">
-            <option value="Alta" ${task.priority_level === 'Alta' ? 'selected' : ''}>Alta</option>
-            <option value="Media" ${task.priority_level === 'Media' ? 'selected' : ''}>Media</option>
-            <option value="Baja" ${task.priority_level === 'Baja' ? 'selected' : ''}>Baja</option>
+           <option value="low" ${task.priority_level.toString() === 'low' ? 'selected' : ''}>Bajo</option>
+          <option value="medium" ${task.priority_level.toString() === 'medium' ? 'selected' : ''}>Medio</option>
+          <option value="high" ${task.priority_level.toString() === 'high' ? 'selected' : ''}>Alto</option>
           </select>
         </div>
       </div>
@@ -260,9 +274,9 @@ export class TaskComponent {
         <div>
           <label class="block text-sm mb-1 dark:text-gray-300">Estado</label>
           <select id="edit-task-status" class="swal2-select">
-            <option value="Pendiente" ${task.status === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
-            <option value="En progreso" ${task.status === 'En progreso' ? 'selected' : ''}>En progreso</option>
-            <option value="Completada" ${task.status === 'Completada' ? 'selected' : ''}>Completada</option>
+            <option value="1" ${task.status.toString() === '1' ? 'selected' : ''}>Activo</option>
+          <option value="0" ${task.status.toString() === '0' ? 'selected' : ''}>En pausa</option>
+          <option value="2" ${task.status.toString() === '2' ? 'selected' : ''}>Completado</option>
           </select>
         </div>
       </div>
@@ -276,7 +290,7 @@ export class TaskComponent {
         // Prioridad
         const prioritySelect = document.getElementById('edit-task-priority') as HTMLSelectElement;
         if (prioritySelect) prioritySelect.value = task.priority_level;
-        
+
         // Estado
         const statusSelect = document.getElementById('edit-task-status') as HTMLSelectElement;
         if (statusSelect) statusSelect.value = task.status;
@@ -299,7 +313,7 @@ export class TaskComponent {
           Swal.getPopup()?.querySelector('#edit-task-status') as HTMLSelectElement
         )?.value;
         return {
-         name, description, expiration_date, priority_level, status
+          name, description, expiration_date, priority_level, status
         };
       },
     }).then((result) => {
@@ -315,8 +329,7 @@ export class TaskComponent {
           project_id: this.projectId,
           user_iduser: 1,
         };
-        this.allTasks = this.allTasks.map((original) =>
-          original.id === task.id ? updatedTask : original
+        this.allTasks = this.allTasks.map((original) => original.id === task.id ? updatedTask : original
         );
         this.updatePaginatedTasks();
 
@@ -332,6 +345,10 @@ export class TaskComponent {
   }
 
   deleteTask(task: Task) {
+    this.alertDelete(task);
+  }
+
+  private alertDelete(task: Task) {
     Swal.fire({
       title: '¿Eliminar tarea?',
       text: `Estás por eliminar "${task.title}". Esta acción no se puede deshacer.`,
@@ -363,33 +380,12 @@ export class TaskComponent {
   toggleSubtasks(task: Task) {
     // Alternar el estado de visualización
     task.showSubtasks = !task.showSubtasks;
-    
-    // Inicializar subtareas si es la primera vez que se expande
-    if (task.showSubtasks && !task.subtasks) {
-      task.subtasks = this.initializeSubtasks(task.id);
-    }
   }
-  
-  private initializeSubtasks(taskId: number): SubTask[] {
-    // Datos de ejemplo - en una app real vendrían de una API
-    return [
-      {
-        id: 1,
-        title: 'Diseñar componentes UI',
-        completed: false,
-        task_id: taskId
-      },
-      {
-        id: 2,
-        title: 'Implementar lógica básica',
-        completed: false,
-        task_id: taskId
-      }
-    ];
-  }
+
 
   logout() {
     // Lógica para cerrar sesión
     console.log('Sesión cerrada');
+    this.authService.logout();
   }
 }
