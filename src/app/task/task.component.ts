@@ -40,7 +40,7 @@ export class TaskComponent implements OnInit, OnDestroy {
   isDarkMode = false;
   themeService = inject(ThemeService);
   route = inject(ActivatedRoute);
-  router = inject(Router)
+  router = inject(Router);
 
   projectId: number = 0;
 
@@ -58,13 +58,9 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   constructor() {
     this.subscription = new Subscription();
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params) => {
       this.projectId = Number(params.get('id_project'));
     });
-
-    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
-      this.router.navigate(['/login']);
-    }
 
     this.detectDarkMode();
   }
@@ -72,17 +68,14 @@ export class TaskComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subscription = this.taskService.getTasks(this.projectId).subscribe({
       next: (response) => {
-        this.allTasks = response
-        console.log(response)
+        this.allTasks = response;
+        console.log(response);
         this.updatePaginatedTasks();
       },
       error: (error) => {
-        if (error.status === 401) {
-          console.log('Error de autorización')
-          this.logout();
-        }
-      }
-    })
+        console.log('Error de autorización');
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -91,7 +84,11 @@ export class TaskComponent implements OnInit, OnDestroy {
 
   detectDarkMode() {
     // Si ThemeService tiene un método para saber el modo, úsalo aquí
-    if (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    ) {
       this.isDarkMode = true;
     }
     // Si ThemeService tiene un observable, puedes suscribirte aquí
@@ -241,7 +238,7 @@ export class TaskComponent implements OnInit, OnDestroy {
   // task.component.ts
   openEditTaskModal(task: Task) {
     // Convertir fecha ISO a formato datetime-local
-    console.log(task)
+    console.log(task);
     const taskDate = task.expiration_date
       ? new Date(task.expiration_date).toISOString().slice(0, 16)
       : '';
@@ -270,9 +267,15 @@ export class TaskComponent implements OnInit, OnDestroy {
         <div>
           <label class="block text-sm mb-1 dark:text-gray-300">Prioridad</label>
           <select id="edit-task-priority" class="swal2-select">
-           <option value="low" ${task.priority_level.toString() === 'low' ? 'selected' : ''}>Bajo</option>
-          <option value="medium" ${task.priority_level.toString() === 'medium' ? 'selected' : ''}>Medio</option>
-          <option value="high" ${task.priority_level.toString() === 'high' ? 'selected' : ''}>Alto</option>
+           <option value="low" ${
+             task.priority_level.toString() === 'low' ? 'selected' : ''
+           }>Bajo</option>
+          <option value="medium" ${
+            task.priority_level.toString() === 'medium' ? 'selected' : ''
+          }>Medio</option>
+          <option value="high" ${
+            task.priority_level.toString() === 'high' ? 'selected' : ''
+          }>Alto</option>
           </select>
         </div>
       </div>
@@ -281,9 +284,15 @@ export class TaskComponent implements OnInit, OnDestroy {
         <div>
           <label class="block text-sm mb-1 dark:text-gray-300">Estado</label>
           <select id="edit-task-status" class="swal2-select">
-            <option value="1" ${task.status.toString() === '1' ? 'selected' : ''}>Activo</option>
-          <option value="0" ${task.status.toString() === '0' ? 'selected' : ''}>En pausa</option>
-          <option value="2" ${task.status.toString() === '2' ? 'selected' : ''}>Completado</option>
+            <option value="1" ${
+              task.status.toString() === '1' ? 'selected' : ''
+            }>Activo</option>
+          <option value="0" ${
+            task.status.toString() === '0' ? 'selected' : ''
+          }>En pausa</option>
+          <option value="2" ${
+            task.status.toString() === '2' ? 'selected' : ''
+          }>Completado</option>
           </select>
         </div>
       </div>
@@ -295,11 +304,15 @@ export class TaskComponent implements OnInit, OnDestroy {
       showCancelButton: true,
       didOpen: () => {
         // Prioridad
-        const prioritySelect = document.getElementById('edit-task-priority') as HTMLSelectElement;
+        const prioritySelect = document.getElementById(
+          'edit-task-priority'
+        ) as HTMLSelectElement;
         if (prioritySelect) prioritySelect.value = task.priority_level;
 
         // Estado
-        const statusSelect = document.getElementById('edit-task-status') as HTMLSelectElement;
+        const statusSelect = document.getElementById(
+          'edit-task-status'
+        ) as HTMLSelectElement;
         if (statusSelect) statusSelect.value = task.status;
       },
       preConfirm: () => {
@@ -308,19 +321,29 @@ export class TaskComponent implements OnInit, OnDestroy {
           Swal.getPopup()?.querySelector('#edit-task-title') as HTMLInputElement
         )?.value;
         const description = (
-          Swal.getPopup()?.querySelector('#edit-task-desc') as HTMLTextAreaElement
+          Swal.getPopup()?.querySelector(
+            '#edit-task-desc'
+          ) as HTMLTextAreaElement
         )?.value;
         const expiration_date = (
           Swal.getPopup()?.querySelector('#edit-task-date') as HTMLInputElement
         )?.value;
         const priority_level = (
-          Swal.getPopup()?.querySelector('#edit-task-priority') as HTMLSelectElement
+          Swal.getPopup()?.querySelector(
+            '#edit-task-priority'
+          ) as HTMLSelectElement
         )?.value;
         const status = (
-          Swal.getPopup()?.querySelector('#edit-task-status') as HTMLSelectElement
+          Swal.getPopup()?.querySelector(
+            '#edit-task-status'
+          ) as HTMLSelectElement
         )?.value;
         return {
-          name, description, expiration_date, priority_level, status
+          name,
+          description,
+          expiration_date,
+          priority_level,
+          status,
         };
       },
     }).then((result) => {
@@ -336,7 +359,8 @@ export class TaskComponent implements OnInit, OnDestroy {
           project_id: this.projectId,
           user_iduser: 1,
         };
-        this.allTasks = this.allTasks.map((original) => original.id === task.id ? updatedTask : original
+        this.allTasks = this.allTasks.map((original) =>
+          original.id === task.id ? updatedTask : original
         );
         this.updatePaginatedTasks();
 
@@ -388,7 +412,6 @@ export class TaskComponent implements OnInit, OnDestroy {
     // Alternar el estado de visualización
     task.showSubtasks = !task.showSubtasks;
   }
-
 
   logout() {
     // Lógica para cerrar sesión

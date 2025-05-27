@@ -20,27 +20,22 @@ export interface Project {
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterModule,
-    FormsModule
-  ],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.scss']
+  styleUrls: ['./projects.component.scss'],
 })
-
-export class ProjectsComponent implements OnInit, OnDestroy{
+export class ProjectsComponent implements OnInit, OnDestroy {
   private authService = inject(AuthService);
   private projectService = inject(ProjectsService);
   public iconStatus = iconStatus;
   private subscription: Subscription;
-  
+
   showProfileMenu = false;
 
   themeService = inject(ThemeService);
-   // Datos y paginación
-   allProjects: Project[] = [];
-  
+  // Datos y paginación
+  allProjects: Project[] = [];
+
   currentPage = 1;
   itemsPerPage = 5;
   paginatedProjects: Project[] = [];
@@ -49,26 +44,20 @@ export class ProjectsComponent implements OnInit, OnDestroy{
   statusOptions = ['Todos', 'Activo', 'En pausa', 'Completado'];
   router = inject(Router);
 
-  constructor(){
+  constructor() {
     this.subscription = new Subscription();
-    if (typeof window !== 'undefined' && !localStorage.getItem('token')) {
-      this.router.navigate(['/login']);
-    }
   }
 
   ngOnInit(): void {
-   this.subscription = this.projectService.getProjects().subscribe({
+    this.subscription = this.projectService.getProjects().subscribe({
       next: (response) => {
-        this.allProjects = response
+        this.allProjects = response;
         this.updatePaginatedProjects();
       },
       error: (error) => {
-        if (error.status === 401) {
-          console.error('Error de autorización')
-         this.logout();
-        }
-      }
-    })
+        console.error('Error de autorización');
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -76,15 +65,15 @@ export class ProjectsComponent implements OnInit, OnDestroy{
   }
 
   get filteredProjects() {
-    return this.allProjects.filter(project => {
-      const matchesSearch = 
+    return this.allProjects.filter((project) => {
+      const matchesSearch =
         project.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
         project.id.toString().includes(this.searchTerm);
-      
-      const matchesStatus = 
-        this.selectedStatus === 'Todos' || 
+
+      const matchesStatus =
+        this.selectedStatus === 'Todos' ||
         project.status === this.selectedStatus;
-      
+
       return matchesSearch && matchesStatus;
     });
   }
@@ -92,7 +81,7 @@ export class ProjectsComponent implements OnInit, OnDestroy{
   updatePaginatedProjects() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     this.paginatedProjects = this.filteredProjects.slice(
-      startIndex, 
+      startIndex,
       startIndex + this.itemsPerPage
     );
   }
@@ -111,7 +100,7 @@ export class ProjectsComponent implements OnInit, OnDestroy{
   get totalPages(): number {
     return Math.ceil(this.allProjects.length / this.itemsPerPage);
   }
-  
+
   logout() {
     // Lógica para cerrar sesión
     console.log('Sesión cerrada');
@@ -133,11 +122,11 @@ export class ProjectsComponent implements OnInit, OnDestroy{
       confirmButtonText: 'Sí, eliminar',
       cancelButtonText: 'Cancelar',
       background: this.themeService.darkMode ? '#1f2937' : '#ffffff',
-      color: this.themeService.darkMode ? '#f3f4f6' : '#111827'
+      color: this.themeService.darkMode ? '#f3f4f6' : '#111827',
     }).then((result) => {
       if (result.isConfirmed) {
         // Lógica para eliminar el proyecto
-        this.allProjects = this.allProjects.filter(p => p.id !== project.id);
+        this.allProjects = this.allProjects.filter((p) => p.id !== project.id);
         this.updatePaginatedProjects();
 
         Swal.fire({
@@ -145,7 +134,7 @@ export class ProjectsComponent implements OnInit, OnDestroy{
           text: 'El proyecto ha sido eliminado.',
           icon: 'success',
           background: this.themeService.darkMode ? '#1f2937' : '#ffffff',
-          color: this.themeService.darkMode ? '#f3f4f6' : '#111827'
+          color: this.themeService.darkMode ? '#f3f4f6' : '#111827',
         });
       }
     });
@@ -173,9 +162,15 @@ export class ProjectsComponent implements OnInit, OnDestroy{
       showCancelButton: true,
       focusConfirm: false,
       preConfirm: () => {
-        const name = (Swal.getPopup()?.querySelector('#project-name') as HTMLInputElement)?.value;
-        const description = (Swal.getPopup()?.querySelector('#project-desc') as HTMLTextAreaElement)?.value;
-        const status = (Swal.getPopup()?.querySelector('#project-status') as HTMLSelectElement)?.value;
+        const name = (
+          Swal.getPopup()?.querySelector('#project-name') as HTMLInputElement
+        )?.value;
+        const description = (
+          Swal.getPopup()?.querySelector('#project-desc') as HTMLTextAreaElement
+        )?.value;
+        const status = (
+          Swal.getPopup()?.querySelector('#project-status') as HTMLSelectElement
+        )?.value;
 
         if (!name) {
           Swal.showValidationMessage('El nombre es requerido');
@@ -183,14 +178,14 @@ export class ProjectsComponent implements OnInit, OnDestroy{
         }
 
         return { name, description, status };
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         const newProject: Project = {
           id: this.allProjects.length + 1,
           name: result.value.name,
           description: result.value.description,
-          status: result.value.status
+          status: result.value.status,
         };
 
         this.allProjects.unshift(newProject);
@@ -201,7 +196,7 @@ export class ProjectsComponent implements OnInit, OnDestroy{
           text: `${newProject.name} ha sido creado exitosamente.`,
           icon: 'success',
           background: this.themeService.darkMode ? '#1f2937' : '#ffffff',
-          color: this.themeService.darkMode ? '#f3f4f6' : '#111827'
+          color: this.themeService.darkMode ? '#f3f4f6' : '#111827',
         });
       }
     });
@@ -215,12 +210,22 @@ export class ProjectsComponent implements OnInit, OnDestroy{
     Swal.fire({
       title: 'Editar Proyecto',
       html: `
-        <input id="project-name" class="swal2-input" placeholder="Nombre" value="${project.name}">
-        <textarea id="project-desc" class="swal2-textarea" placeholder="Descripción">${project.description}</textarea>
+        <input id="project-name" class="swal2-input" placeholder="Nombre" value="${
+          project.name
+        }">
+        <textarea id="project-desc" class="swal2-textarea" placeholder="Descripción">${
+          project.description
+        }</textarea>
         <select id="project-status" class="swal2-select">
-          <option value="1" ${project.status.toString() === '1' ? 'selected' : ''}>Activo</option>
-          <option value="0" ${project.status.toString() === '0' ? 'selected' : ''}>En pausa</option>
-          <option value="2" ${project.status.toString() === '2' ? 'selected' : ''}>Completado</option>
+          <option value="1" ${
+            project.status.toString() === '1' ? 'selected' : ''
+          }>Activo</option>
+          <option value="0" ${
+            project.status.toString() === '0' ? 'selected' : ''
+          }>En pausa</option>
+          <option value="2" ${
+            project.status.toString() === '2' ? 'selected' : ''
+          }>Completado</option>
         </select>
       `,
       background: this.themeService.darkMode ? '#1f2937' : '#ffffff',
@@ -229,9 +234,15 @@ export class ProjectsComponent implements OnInit, OnDestroy{
       showCancelButton: true,
       focusConfirm: false,
       preConfirm: () => {
-        const name = (Swal.getPopup()?.querySelector('#project-name') as HTMLInputElement)?.value;
-        const description = (Swal.getPopup()?.querySelector('#project-desc') as HTMLTextAreaElement)?.value;
-        const status = (Swal.getPopup()?.querySelector('#project-status') as HTMLSelectElement)?.value;
+        const name = (
+          Swal.getPopup()?.querySelector('#project-name') as HTMLInputElement
+        )?.value;
+        const description = (
+          Swal.getPopup()?.querySelector('#project-desc') as HTMLTextAreaElement
+        )?.value;
+        const status = (
+          Swal.getPopup()?.querySelector('#project-status') as HTMLSelectElement
+        )?.value;
 
         if (!name) {
           Swal.showValidationMessage('El nombre es requerido');
@@ -239,17 +250,18 @@ export class ProjectsComponent implements OnInit, OnDestroy{
         }
 
         return { name, description, status };
-      }
+      },
     }).then((result) => {
       if (result.isConfirmed && result.value) {
         const updatedProject = {
           ...project,
           name: result.value.name,
           description: result.value.description,
-          status: result.value.status
+          status: result.value.status,
         };
 
-        this.allProjects = this.allProjects.map(p => p.id === project.id ? updatedProject : p
+        this.allProjects = this.allProjects.map((p) =>
+          p.id === project.id ? updatedProject : p
         );
         this.updatePaginatedProjects();
 
@@ -258,7 +270,7 @@ export class ProjectsComponent implements OnInit, OnDestroy{
           text: `${updatedProject.name} ha sido actualizado exitosamente.`,
           icon: 'success',
           background: this.themeService.darkMode ? '#1f2937' : '#ffffff',
-          color: this.themeService.darkMode ? '#f3f4f6' : '#111827'
+          color: this.themeService.darkMode ? '#f3f4f6' : '#111827',
         });
       }
     });
