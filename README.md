@@ -2,6 +2,34 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.8.
 
+## Key Features
+
+- **User Authentication & Authorization**
+  - Secure login/register system
+  - Token-based authentication
+  - Route protection with guards
+  - Robust error handling for auth flows
+
+- **Project Management**
+  - Create and manage multiple projects
+  - Project categorization and status tracking
+  - Pagination for large project lists
+  - Project-specific task management
+
+- **Task Management**
+  - Create and assign tasks to projects
+  - Task status tracking
+  - Subtask management
+  - Task prioritization
+  - Due date management
+
+- **Modern Architecture**
+  - Modular component structure
+  - Reusable services for data management
+  - Interceptors for HTTP requests and error handling
+  - Responsive UI with Tailwind CSS
+  - Server-side rendering support
+
 ## Development server
 
 To start a local development server, run:
