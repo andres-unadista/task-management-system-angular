@@ -17,6 +17,7 @@ export const routes: Routes = [
     path: 'task/:id_project',
     component: TaskComponent,
     canActivate: [AuthGuard],
+    data: { renderMode: 'ssr' }
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: '**', redirectTo: 'login' },
