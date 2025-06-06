@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientModule } from '@angular/common/http';
 import { ProjectsComponent } from './projects.component';
 
 describe('ProjectsComponent', () => {
@@ -8,7 +8,8 @@ describe('ProjectsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ProjectsComponent]
+      imports: [ProjectsComponent, HttpClientModule],
+      providers: [],
     })
     .compileComponents();
 
@@ -19,5 +20,12 @@ describe('ProjectsComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should render title', () => {
+    const fixture = TestBed.createComponent(ProjectsComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('h2')?.textContent).toContain('Projects');
   });
 });
