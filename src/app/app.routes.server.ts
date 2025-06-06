@@ -1,8 +1,8 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 const routesIDs: string[] = [
-  'custom-id1',
-  'custom-id2',
+  '1',
+  '2',
   ];
 
 export const serverRoutes: ServerRoute[] = [
@@ -11,7 +11,7 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
     async getPrerenderParams() {
        const ids = routesIDs;
-       return ids.map(id => ({ id }));
+       return ids.map(id_project => ({ id_project }));
    },
   },
   {
