@@ -13,10 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: 'Hello World'
-      run: echo "Hello World"
-    - name: 'List directory'
-      run: ls -la
-    - name: 'Fecha'
-      run: date
+  - uses: actions/checkout@v4
+  - uses: actions/setup-node@v4
+    with:
+      node-version: 18
+  - run: npm ci
+  - run: npm run build
