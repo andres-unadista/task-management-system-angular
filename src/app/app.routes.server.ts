@@ -1,8 +1,8 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 
 const routesIDs: string[] = [
-  '1',
-  '2',
+  'custom-id1',
+  'custom-id2',
   ];
 
 export const serverRoutes: ServerRoute[] = [
