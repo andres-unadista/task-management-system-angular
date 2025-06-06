@@ -15,3 +15,7 @@ jobs:
     steps:
     - name: 'Hello World'
       run: echo "Hello World"
+    - name: 'List directory'
+      run: ls -la
+    - name: 'Fecha'
+      run: date
