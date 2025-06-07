@@ -1,12 +1,12 @@
 // tailwind.config.js
 module.exports = {
   content: [
-    "./src/**/*.{html,ts}"
+    './src/**/*.{html,ts}'
   ],
   darkMode: 'media', // or 'class'
   theme: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
+  plugins: []
   // This is an optional comment
 }
