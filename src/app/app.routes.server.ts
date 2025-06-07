@@ -5,6 +5,16 @@ const routesIDs: string[] = [
   '2',
   ];
 
+/**
+ * Defines server-side routes with prerendering configurations.
+ * 
+ * - The 'task/:id_project' route uses prerendering with specific parameters
+ *   obtained asynchronously from `getPrerenderParams()`. It maps `routesIDs`
+ *   to dynamic route segments.
+ * 
+ * - The '**' route serves as a catch-all wildcard route, also leveraging 
+ *   prerendering.
+ */
 export const serverRoutes: ServerRoute[] = [
   {
     path: 'task/:id_project',

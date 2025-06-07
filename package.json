@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "lint": "standard",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:app-task-angular-laravel": "node dist/app-task-angular-laravel/server/server.mjs"
@@ -44,11 +45,17 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
+    "standard": "^17.1.2",
     "tailwindcss": "^4.1.5",
     "typescript": "~5.7.2"
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.0.1",
     "lightningcss-linux-x64-gnu": "^1.29.1"
+  },
+  "eslintConfig": {
+    "extends": [
+      "./node_modules/standard/eslintrc.json"
+    ]
   }
 }
