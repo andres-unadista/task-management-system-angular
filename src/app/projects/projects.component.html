@@ -79,9 +79,9 @@
                             <td data-label="Descripción">{{project.description}}</td>
                             <td data-label="Estado">{{iconStatus[project.status]}}</td>
                             <td data-label="Acciones">
-                                <button class="edit-btn" (click)="openEditProjectModal(project, $event)"><i
+                                <button class="edit-btn" (click)="openEditProjectModal(project)"><i
                                         class="fas fa-edit"></i></button>
-                                <button class="delete-btn" (click)="deleteProject(project, $event)"><i
+                                <button class="delete-btn" (click)="deleteProject(project)"><i
                                         class="fas fa-trash"></i></button>
                             </td>
                         </tr>
