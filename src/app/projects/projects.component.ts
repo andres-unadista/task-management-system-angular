@@ -55,7 +55,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         this.updatePaginatedProjects();
       },
       error: (error) => {
-        console.error('Error de autorización');
+        console.error('Error de autorización', error);
       },
     });
   }
@@ -107,7 +107,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.authService.logout();
   }
 
-  deleteProject(project: Project, event: MouseEvent) {
+  deleteProject(project: Project) {
     this.alertDelete(project);
   }
 
@@ -202,7 +202,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     });
   }
 
-  openEditProjectModal(project: Project, event: MouseEvent) {
+  openEditProjectModal(project: Project) {
     this.alertEdit(project);
   }
 

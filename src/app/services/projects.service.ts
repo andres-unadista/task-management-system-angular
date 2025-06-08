@@ -3,6 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Project } from '../projects/projects.component';
 
+interface RequestProject {
+  status: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -31,7 +35,7 @@ export class ProjectsService {
     return this.http.put<Project>(`${this.apiUrl}/${project.id}`, project);
   }
 
-  deleteProject(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteProject(id: number): Observable<RequestProject> {
+    return this.http.delete<RequestProject>(`${this.apiUrl}/${id}`);
   }
 }

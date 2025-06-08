@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "lint": "standard",
+    "lint": "eslint . --ext .ts",
+    "lint:ts": "eslint src/**/*.ts",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:app-task-angular-laravel": "node dist/app-task-angular-laravel/server/server.mjs"
@@ -31,6 +32,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^19.2.8",
+    "@angular-eslint/eslint-plugin": "^20.0.0",
+    "@angular-eslint/eslint-plugin-template": "^20.0.0",
     "@angular/cli": "^19.2.8",
     "@angular/compiler-cli": "^19.2.0",
     "@tailwindcss/postcss": "^4.1.5",
@@ -47,7 +50,6 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "postcss": "^8.5.3",
-    "standard": "^17.1.2",
     "tailwindcss": "^4.1.5",
     "typescript": "~5.7.2"
   },
@@ -57,19 +59,38 @@
   },
   "eslintConfig": {
     "extends": [
-      "./node_modules/standard/eslintrc.json",
-      "plugin:@typescript-eslint/recommended"
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@angular-eslint/recommended",
+      "plugin:@angular-eslint/template/process-inline-templates"
     ],
     "parser": "@typescript-eslint/parser",
-    "plugins": ["@typescript-eslint"],
+    "plugins": [
+      "@typescript-eslint",
+      "@angular-eslint"
+    ],
     "parserOptions": {
       "ecmaVersion": 2023,
-      "sourceType": "module"
+      "sourceType": "module",
+      "project": "./tsconfig.json"
     },
     "env": {
       "browser": true,
       "es2023": true,
       "node": true
+    },
+    "rules": {
+      "semi": [
+        "off"
+      ],
+      "comma-dangle": ["off"],
+      "@typescript-eslint/semi": ["off"],
+      "dot-notation": "off",
+      "@angular-eslint/component-selector": "off",
+      "@angular-eslint/directive-selector": "off",
+      "@angular-eslint/no-empty-lifecycle-method": "off",
+      "@angular-eslint/prefer-inject": "off",
+      "prefer-const": "off"
     }
   }
 }

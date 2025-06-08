@@ -3,8 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 import { Task } from '../task/task.component';
 
+interface RequestTask {
+  status: string;
+}
+
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class TasksService {
   private apiUrl = 'http://app-movies-api.test/api/tasks';
@@ -21,7 +25,7 @@ export class TasksService {
       })
       .pipe(
         map((response: Task[]) => {
-          response = response.map((task: any) => {
+          response = response.map((task: Task) => {
             return {...task, id: task.idtask}
           })
           return response
@@ -41,7 +45,7 @@ export class TasksService {
     return this.http.put<Task>(`${this.apiUrl}/${task.id}`, task);
   }
 
-  deleteTask(id: number): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteTask(id: number): Observable<RequestTask> {
+    return this.http.delete<RequestTask>(`${this.apiUrl}/${id}`);
   }
 }

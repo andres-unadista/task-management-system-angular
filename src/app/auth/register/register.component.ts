@@ -32,7 +32,7 @@ export class RegisterComponent {
     
   register(user: UserRegistration) {
     this.authService.register(user).subscribe({
-      next: (response) => {
+      next: () => {
         // Handle successful registration
         this.router.navigate(['/'])
       },

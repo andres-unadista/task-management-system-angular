@@ -12,6 +12,7 @@ import { Subscription } from 'rxjs';
 
 export interface Task {
   id: number;
+  idtask: number;
   title: string;
   description: string;
   expiration_date: string;
@@ -73,7 +74,7 @@ export class TaskComponent implements OnInit, OnDestroy {
         this.updatePaginatedTasks();
       },
       error: (error) => {
-        console.log('Error de autorización');
+        console.log('Error de autorización', error);
       },
     });
   }

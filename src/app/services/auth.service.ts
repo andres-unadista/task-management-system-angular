@@ -4,6 +4,11 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+interface AuthRequest {
+  status: string;
+  token: string;
+}
+
 export interface UserCredentials {
   email: string;
   password: string;
@@ -15,6 +20,10 @@ export interface UserRegistration {
   password: string;
 }
 
+interface ResponseToken {
+  access_token: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -24,24 +33,22 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: UserCredentials): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
-      map((response: any) => {
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('token', response.access_token);
-        }
-        return response;
-      })
-    );
+  login(credentials: UserCredentials): Observable<ResponseToken> {
+    return this.http.post<ResponseToken>(`${this.apiUrl}/login`, credentials).pipe(map((response: ResponseToken) => {
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('token', response.access_token);
+      }
+      return response;
+    }));
   }
 
-  register(user: UserRegistration): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, user).pipe(
-      map((response: any) => {
+  register(user: UserRegistration): Observable<AuthRequest> {
+    return this.http.post<AuthRequest>(`${this.apiUrl}/register`, user).pipe(
+      map((response: AuthRequest) => {
         if (typeof window !== 'undefined') {
           localStorage.setItem('token', response.token);
         }
-        return response;
+        return response
       })
     );
   }
